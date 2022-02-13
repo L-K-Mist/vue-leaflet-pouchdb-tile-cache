@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="map"></div>
-    <div id="explain">
+    <div id="explain text-block">
       <p>
       Watch the console for info. <code>Shift + Ctrl + J</code> 
       Every time you see chache hit it means we've saved one online tile-request (to for example: cartoserver).
@@ -75,5 +75,9 @@ export default Vue.extend({
   height: 100%;
   min-width: 400px;
   min-height: 350px;
+}
+
+p {
+  text-align: left;
 }
 </style>
