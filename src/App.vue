@@ -1,41 +1,44 @@
 <template>
   <div id="app">
-    <div id="map"></div>
-    <div id="explain text-block">
-      <p>
-      Watch the console for info. <code>Shift + Ctrl + J</code> 
-      <p>
-        Every time you see cache hit it means we've saved one online tile-request (to for example: cartoserver).
-      </p>
-      <p>
-By checking if we've got that pouch-id
-<ul>
-  <li>
-and the id's are cleverly those same whole hyperlinks for each tile.
-  </li>
-    <li>
-eg. "http://cs.stratumfive.com/chart/2400,1000/epsg3857:-12000000,5000000,12000000,-5000000/png?layers=bg:fff;latlongrid;trs2:2021102617::::"
-  </li>
-</ul>
-          
-          
-      </p>
-      <p>
-      When it says cache missed, that just means it had to fetch and cache that file. Over-time you get more hits than misses.
-      If you say zoom out and to the same town a couple of times, due to sensible debounce/throttling, you probably save some tiles but not all, on your first zoom in. Every time, you're sort of colouring-in the local storage of tiles. So the susequent zooms just get snappier.
-      </p>
-      <p>
-Watch the Application tab in dev-tools:
-      </p>
-       
-      <p>
-          You see the number of files building up by clicking the button below.
-
-      </p>
-      <!-- </p> -->
-    </div>
+    <div id="layout">
+      <div id="header">Local Tile Cache</div>
+      <div id="map"></div>
+      <div id="explain-text-block">
+        <p>
+        Watch the console for info. <code>Shift + Ctrl + J</code> 
+        <p>
+          Every time you see cache hit it means we've saved one unecessary online tile-request (to for example: cartoserver).
+        </p>
+        <p>
+        By checking if we've got that pouch-id
+        <ul>
+          <li>
+        and the id's are cleverly those same whole hyperlinks for each tile.
+          </li>
+            <li>
+              eg. 
+              <code>
+              _id="http://cs.stratumfive.com/chart/2400,1000/epsg3857:-12000000,5000000,12000000,-5000000/png?layers=bg:fff;latlongrid;trs2:2021102617::::"
+              </code>
+          </li>
+        </ul>
+        </p>
+        <p>
+        When it says cache missed, that just means it had to fetch and cache that file. Over-time you get more hits than misses.
+        If you say zoom out and to the same town a couple of times, due to sensible debounce/throttling, you probably save some tiles but not all, on your first zoom in. Every time, you're sort of colouring-in the local storage of tiles. So the susequent zooms just get snappier.
+        </p>
+        <p>
+  Watch the Application tab in dev-tools:
+        </p>
+        <p>
+            You see the number of files building up by clicking the button below.
+        </p>
+        <!-- </p> -->
+      </div>
     <button @click="getDocs">Log from subselection of allDocs</button>
   </div>
+</div>
+  
 </template>
 
 <script>
@@ -70,7 +73,18 @@ export default Vue.extend({
         conflicts: true,
       })
       console.log("dvdb - getDocs - firstHundred", firstHundred)
-      this.pouchTiles.createIndex({
+
+      const testQuery = await this.pouchTiles.query({
+        map: function(doc, emit) {
+          if (doc.timestamp < 1644742201127) {
+            emit(doc.name, 1);
+          }
+        }  
+      })
+      console.log("dvdb - getDocs - testQuery", testQuery)
+       
+       /**
+        *    this.pouchTiles.createIndex({
         index: {fields: ['_id', "timestamp"]},
         ddoc: "timestamp"
     }).then( async(response) => {
@@ -85,12 +99,17 @@ export default Vue.extend({
             $gt: 1644742199836,
             $lt: 1644742201127
           },
+          _id: {
+            $gt: 0
+          }
         },
         fields: ['timestamp', "_id"],
         // sort: ['timestamp']
       })
       console.log("dvdb - getDocs - valToReturn", valToReturn)
     })
+        *  */ 
+    
   }
 },
   mounted() {
@@ -148,6 +167,19 @@ export default Vue.extend({
   height: 100%;
   min-width: 400px;
   min-height: 350px;
+}
+
+#header {
+  font-size: large;
+}
+
+#layout {
+  margin: auto;
+  max-width: 900px;
+}
+
+#explain-text-block {
+  margin: 0 50px;
 }
 
 p {
