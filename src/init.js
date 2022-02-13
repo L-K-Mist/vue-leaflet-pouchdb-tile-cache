@@ -75,5 +75,6 @@ export default (elementId) => {
   layer.on("seedend", function (seedData) {
     console.log("Cache seeding complete");
   });
+  return L
 }
 
