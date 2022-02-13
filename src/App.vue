@@ -41,6 +41,9 @@ Watch the Application tab in dev-tools:
 <script>
 import Vue from "vue";
 import PouchDB from "pouchdb-browser";
+import PouchFind from 'pouchdb-find' // https://pouchdb.com/guides/mango-queries.html
+
+PouchDB.plugin(PouchFind);
 
 import init from "@/init";
 import { joinPouchToLeaflet } from "@/utils/L.TileLayer.PouchDBCached.js";
@@ -55,6 +58,41 @@ export default Vue.extend({
       response: null,
     };
   },
+  methods: {
+    async getDocs() {
+      const allDocs = await this.pouchTiles.allDocs()
+      const localTilesCount = allDocs.rows.length
+      console.log("dvdb - getDocs - localTilesCount", localTilesCount)
+      const firstHundred = await this.pouchTiles.allDocs({
+        include_docs: true,
+        binary: true,
+        limit: 100,
+        conflicts: true,
+      })
+      console.log("dvdb - getDocs - firstHundred", firstHundred)
+      this.pouchTiles.createIndex({
+        index: {fields: ['_id', "timestamp"]},
+        ddoc: "timestamp"
+    }).then( async(response) => {
+      console.log("dvdb - getDocs - response", response)
+      const valToReturn = await this.pouchTiles.find({
+          // use_index: 'timestamp',
+        selector: {
+          // Don't know what between these strings really means,
+          // In other structures it makes sense to think in endpoints or file-paths.
+          // Id's like this create a deeply-nested data-structure from flat-stored documents. 
+          timestamp: {
+            $gt: 1644742199836,
+            $lt: 1644742201127
+          },
+        },
+        fields: ['timestamp', "_id"],
+        // sort: ['timestamp']
+      })
+      console.log("dvdb - getDocs - valToReturn", valToReturn)
+    })
+  }
+},
   mounted() {
     this.L = init("map");
     console.log("dvdb - mounted - this.L", this.L);
@@ -78,22 +116,21 @@ export default Vue.extend({
         this.response = response
       }
     );
+
+      console.log("dvdb - mounted - creatIndex", this.pouchTiles)
+    // use MongoDB query syntax
+    this.pouchTiles.createIndex({
+      index: {fields: ['id']}
+    });
+    console.log("dvdb - mounted - creatIndex after add", this.pouchTiles) 
   },
-  methods: {
-    async getDocs() {
-      const allDocs = await this.pouchTiles.allDocs()
-      const localTilesCount = allDocs.rows.length
-      console.log("dvdb - getDocs - localTilesCount", localTilesCount)
-      const firstHundred = await this.pouchTiles.allDocs({
-        include_docs: true,
-        binary: true,
-        limit: 100,
-        conflicts: true,
-      })
-      console.log("dvdb - getDocs - firstHundred", firstHundred)
-    }
-  }
-});
+  
+})
+
+
+
+  
+
 </script>
 
 <style>
