@@ -4,16 +4,35 @@
     <div id="explain text-block">
       <p>
       Watch the console for info. <code>Shift + Ctrl + J</code> 
-      Every time you see chache hit it means we've saved one online tile-request (to for example: cartoserver).
-      By checking if we've got that pouch-id
-          and the id's are cleverly those same whole hyperlinks for each tile.
-          eg. "http://cs.stratumfive.com/chart/2400,1000/epsg3857:-12000000,5000000,12000000,-5000000/png?layers=bg:fff;latlongrid;trs2:2021102617::::"
-      When it says cache missed, that just means it had to fetch and cache that file.
-      Over-time you get more hits than misses. 
-      Watch the Application tab in dev-tools:
-          You see the number of files building up (you have to click the refresh-button)
+      <p>
+        Every time you see cache hit it means we've saved one online tile-request (to for example: cartoserver).
       </p>
+      <p>
+By checking if we've got that pouch-id
+<ul>
+  <li>
+and the id's are cleverly those same whole hyperlinks for each tile.
+  </li>
+    <li>
+eg. "http://cs.stratumfive.com/chart/2400,1000/epsg3857:-12000000,5000000,12000000,-5000000/png?layers=bg:fff;latlongrid;trs2:2021102617::::"
+  </li>
+</ul>
+          
+          
+      </p>
+      
+      When it says cache missed, that just means it had to fetch and cache that file. Over-time you get more hits than misses.
+      <p>
+Watch the Application tab in dev-tools:
+      </p>
+       
+      <p>
+          You see the number of files building up (you have to click the refresh-button)
+
+      </p>
+      <!-- </p> -->
     </div>
+    <button @click="getDocs">Log from subselection of allDocs</button>
   </div>
 </template>
 
@@ -31,6 +50,7 @@ export default Vue.extend({
       text: "Hello world",
       L: null,
       pouchTiles: null,
+      response: null,
     };
   },
   mounted() {
@@ -53,10 +73,23 @@ export default Vue.extend({
         include_docs: true,
       },
       (response) => {
-        console.log("dvdb - mounted - response", response);
+        this.response = response
       }
     );
   },
+  methods: {
+    async getDocs() {
+      const allDocs = await this.pouchTiles.allDocs()
+      const localTilesCount = allDocs.rows.length
+      console.log("dvdb - getDocs - localTilesCount", localTilesCount)
+      const firstHundred = await this.pouchTiles.allDocs({
+        include_docs: true,
+        binary: true,
+        limit: 100,
+      })
+      console.log("dvdb - getDocs - firstHundred", firstHundred)
+    }
+  }
 });
 </script>
 
