@@ -20,14 +20,16 @@ eg. "http://cs.stratumfive.com/chart/2400,1000/epsg3857:-12000000,5000000,120000
           
           
       </p>
-      
+      <p>
       When it says cache missed, that just means it had to fetch and cache that file. Over-time you get more hits than misses.
+      If you say zoom out and to the same town a couple of times, due to sensible debounce/throttling, you probably save some tiles but not all, on your first zoom in. Every time, you're sort of colouring-in the local storage of tiles. So the susequent zooms just get snappier.
+      </p>
       <p>
 Watch the Application tab in dev-tools:
       </p>
        
       <p>
-          You see the number of files building up (you have to click the refresh-button)
+          You see the number of files building up by clicking the button below.
 
       </p>
       <!-- </p> -->
@@ -86,6 +88,7 @@ export default Vue.extend({
         include_docs: true,
         binary: true,
         limit: 100,
+        conflicts: true,
       })
       console.log("dvdb - getDocs - firstHundred", firstHundred)
     }
