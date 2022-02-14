@@ -86,33 +86,6 @@ export default Vue.extend({
       console.log("we can filter queries based on the main link, eg 'https://stamen-tiles-a.a.ssl.fastly.net/'")
       console.log("dvdb - getDocs - queryTerrainTilesOnly", queryTerrainTilesOnly)
       
-       
-       /**
-        *    this.pouchTiles.createIndex({
-        index: {fields: ['_id', "timestamp"]},
-        ddoc: "timestamp"
-    }).then( async(response) => {
-      console.log("dvdb - getDocs - response", response)
-      const valToReturn = await this.pouchTiles.find({
-          // use_index: 'timestamp',
-        selector: {
-          // Don't know what between these strings really means,
-          // In other structures it makes sense to think in endpoints or file-paths.
-          // Id's like this create a deeply-nested data-structure from flat-stored documents. 
-          timestamp: {
-            $gt: 1644742199836,
-            $lt: 1644742201127
-          },
-          _id: {
-            $gt: 0
-          }
-        },
-        fields: ['timestamp', "_id"],
-        // sort: ['timestamp']
-      })
-      console.log("dvdb - getDocs - valToReturn", valToReturn)
-    })
-        *  */ 
     
   }
 },
