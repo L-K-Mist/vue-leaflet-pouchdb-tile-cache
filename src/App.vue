@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="layout">
-      <div id="header">Local Tile Cache</div>
+      <div id="header">Local-Tile Persistent-Cache</div>
       <div id="map"></div>
       <div id="explain-text-block">
         <p>
@@ -63,6 +63,7 @@ export default Vue.extend({
   },
   methods: {
     async getDocs() {
+      // Testing different ways to access info from pouch
       const allDocs = await this.pouchTiles.allDocs()
       const localTilesCount = allDocs.rows.length
       console.log("dvdb - getDocs - localTilesCount", localTilesCount)
@@ -77,7 +78,7 @@ export default Vue.extend({
       const testQuery = await this.pouchTiles.query({
         map: function(doc, emit) {
           if (doc.timestamp < 1644742201127) {
-            emit(doc.name, 1);
+            emit(doc._id, 1);
           }
         }  
       })
