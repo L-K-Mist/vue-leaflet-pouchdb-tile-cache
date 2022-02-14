@@ -75,14 +75,17 @@ export default Vue.extend({
       })
       console.log("dvdb - getDocs - firstHundred", firstHundred)
 
-      const testQuery = await this.pouchTiles.query({
+      const queryTerrainTilesOnly = await this.pouchTiles.query({
         map: function(doc, emit) {
-          if (doc.timestamp < 1644742201127) {
-            emit(doc._id, 1);
+          if (doc._id.includes('https://stamen-tiles-a.a.ssl')) {
+            emit(doc, 1);
           }
         }  
       })
-      console.log("dvdb - getDocs - testQuery", testQuery)
+      console.log("Even if all tiles are stored flat regardless of endpoint used,")
+      console.log("we can filter queries based on the main link, eg 'https://cs.stratumfive.com/'")
+      console.log("dvdb - getDocs - queryTerrainTilesOnly", queryTerrainTilesOnly)
+      
        
        /**
         *    this.pouchTiles.createIndex({
