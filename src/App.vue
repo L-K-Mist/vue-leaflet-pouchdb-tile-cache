@@ -83,7 +83,7 @@ export default Vue.extend({
         }  
       })
       console.log("Even if all tiles are stored flat regardless of endpoint used,")
-      console.log("we can filter queries based on the main link, eg 'https://cs.stratumfive.com/'")
+      console.log("we can filter queries based on the main link, eg 'https://stamen-tiles-a.a.ssl.fastly.net/'")
       console.log("dvdb - getDocs - queryTerrainTilesOnly", queryTerrainTilesOnly)
       
        
